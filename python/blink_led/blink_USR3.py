@@ -29,110 +29,18 @@ THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------
 Program that will
   - use the Adafruit BBIO library to blink the USR3 LED at 5 Hz
-Operations:
-  - addition
-  - subtraction
-  - multiplication
-  - division
-  - right shift
-  - left shift
-  - modulo
-  - exponentiation
-Error conditions:
-  - Invalid operator --> Program should exit
-  - Invalid number   --> Program should exit
 --------------------------------------------------------------------------
 """
 
-# NOTE - Add import statements to allow access to Python library functions
+# NOTE - Add import statements to allow access to Adafruit and GPIO
 
-import operator
-
-# ------------------------------------------------------------------------
-# Constants
-# ------------------------------------------------------------------------
-
-# NOTE - No constants are needed for this example 
-
-# ------------------------------------------------------------------------
-# Global variables
-# ------------------------------------------------------------------------
-
-# NOTE - Need a global variable to map an operator string (e.g. "+") to 
-# NOTE - the appropriate function.
-
-operators = {
-    "+" : operator.add,
-    "-" : operator.sub,
-    "*" : operator.mul,
-    "/" : operator.truediv,
-    ">>" : operator.rshift,
-    "<<" : operator.lshift,
-    "%" : operator.mod,
-    "**" : operator.pow,
-}
-
-# ------------------------------------------------------------------------
-# Functions
-# ------------------------------------------------------------------------
-
-# NOTE - Add function "get_user_input()".  This function will:
-# NOTE -     """Get input from the user.
-# NOTE -          Returns tuple:  (number, number, function) or
-# NOTE -          (None, None, None) if inputs invalid
-# NOTE -     """
-# NOTE - 
-# NOTE - User input is generally returned as a string and must be translated.
-
-def get_user_input():
-    """Get input from the user.
-         Returns tuple: (number, number, function) or 
-         (None, None, None) if the inputs are invalid
-    """
-    try:
-        input = raw_input
-    except NameError:
-        pass
-        
-    try:
-        number1 = float(input("Enter first number : "))
-        number2 = float(input("Enter second number: "))
-        op      = input("Enter function (valid values are +, -, *, /, >>, <<, %, **): ")
-    
-        func    = operators.get(op)
-    except:
-        return (None, None, None)
-    
-    return (number1, number2, func)
-
-# End def
-
-
-# ------------------------------------------------------------------------
-# Main script
-# ------------------------------------------------------------------------
-
-# NOTE - The python variable "__name__" is provided by the language and can 
-# NOTE - be used to determine how the file is being executed.  For example,
-# NOTE - if the program is being executed on the command line:
-# NOTE -   python3 simple_calc.py
-# NOTE - then the "__name__" will be the string:  "__main__".  If the file 
-# NOTE - is being imported into another python file:
-# NOTE -   import simple_calc
-# NOTE - the the "__name__" will be the module name, i.e. the string "simple_calc"
+import Adafruit_BBIO.GPIO as GPIO
+import time
 
 if __name__ == "__main__":
-    # NOTE - Need to add main calculator functionality:
-    # NOTE -   - Use a loop construct to repeat the operation
-    # NOTE -   - Get the input from the user (i.e. use function created above)    
-    # NOTE -   - Check that all inputs are valid
-    # NOTE -   - Execute the function on the numbers and print the results
-
-    while True:
-        (num1, num2, func) = get_user_input()
-        
-        if (num1 == None) or (num2 == None) or (func == None):
-            print("Invalid input")
-            break
-        
-        print(func(num1, num2))
+  GPIO.setup("USR3", GPIO.OUT)
+  while True:
+    GPIO.output("USR3", GPIO.HIGH)
+    time.sleep(0.1)
+    GPIO.output("USR3", GPIO.LOW)
+    time.sleep(0.1)
