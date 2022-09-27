@@ -102,6 +102,11 @@ def get_user_input():
          (None, None, None) if the inputs are invalid
     """
     try:
+        input = raw_input
+    except NameError:
+        pass
+        
+    try:
         number1 = float(input("Enter first number : "))
         number2 = float(input("Enter second number: "))
         op      = input("Enter function (valid values are +, -, *, /, >>, <<, %, **): ")
