@@ -1,20 +1,18 @@
-# Importing Libraries
+# Importing libraries
 import Adafruit_BBIO.PWM as PWM
 import Adafruit_BBIO.GPIO as GPIO
 import time
-import Adafruit_BBIO.ADC as ADC
-
+import board
+import busio
+import adafruit_sht31d
 
 # Initializing pins and variables
 servo1 = "P1_33" #for turning switch on
 servo2 = "P1_36" #for turning switch off
-
 BTinput = 0
 BT = "P1_3" #pin connected to USB breakout board, which has Bluetooth module plugged in
 
-temp = "P1_2" #temperature sensor
-
-# Returning Servos to Neutral Position
+# Setting servos to neutral position
 PWM.start(servo1,7.5,50)
 time.sleep (1)
 PWM.stop(servo1)
@@ -24,7 +22,7 @@ time.sleep (1)
 PWM.stop(servo2)
 PWM.cleanup()
 
-# Get Bluetooth Output
+# Get bluetooth output
 direction = GPIO.setup(BT, GPIO.IN)
 bt = GPIO.input(BT) #BT output from USB/GPIO port
 
@@ -39,15 +37,11 @@ while True:
         PWM.stop(servo1)
         PWM.cleanup()
         
-        # Getting temperature readout
-        ADC.setup()
-        while True:
-            reading = ADC.read(temp)
-            millivolts = reading * 1800  # 1.8V reference = 1800 mV
-            temp_c = (millivolts - 500) / 10
-            temp_f = (temp_c * 9/5) + 32
-            print('C=%d F=%d' % (temp_c, temp_f))
-            time.sleep(1)
+        # Getting temperature and humidity readout
+        i2c = busio.I2C(board.SCL, board.SDA)
+        sensor = adafruit_sht31d.SHT31D(i2c)
+        print('Humidity: {0}%'.format(sensor.relative_humidity))
+        print('Temperature: {0}C'.format(sensor.temperature))
         
     elif BTinput = 0 #Bluetooth signaling "Off" command     
         PWM.start(servo2,5,50) #rotating servo2 all the way right
@@ -56,15 +50,12 @@ while True:
         time.sleep (1.0)
         PWM.stop(servo2)
         PWM.cleanup()
+        
         # Getting temperature readout
-        ADC.setup()
-        while True:
-            reading = ADC.read(temp)
-            millivolts = reading * 1800  # 1.8V reference = 1800 mV
-            temp_c = (millivolts - 500) / 10
-            temp_f = (temp_c * 9/5) + 32
-            print('C=%d F=%d' % (temp_c, temp_f))
-            time.sleep(1)
+        i2c = busio.I2C(board.SCL, board.SDA)
+        sensor = adafruit_sht31d.SHT31D(i2c)
+        print('Humidity: {0}%'.format(sensor.relative_humidity))
+        print('Temperature: {0}C'.format(sensor.temperature))
             
     else #standby state
         PWM.start(servo1,7.5,50)
@@ -75,5 +66,3 @@ while True:
         time.sleep (1)
         PWM.stop(servo2)
         PWM.cleanup()
-        
-    # Press CTRL + C to end program
