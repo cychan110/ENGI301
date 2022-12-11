@@ -86,7 +86,7 @@ while True:
         print('Humidity: {0}%'.format(sensor.relative_humidity))
         print('Temperature: {0}C'.format(sensor.temperature))
             
-    else #standby state
+    else # Standby state
         PWM.start(servo1,7.5,50)
         time.sleep (1)
         PWM.stop(servo1)
